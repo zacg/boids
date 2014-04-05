@@ -47,3 +47,24 @@ func NewBoid(x float64, y float64) Boid {
 func (boid *Boid) Run() {
 
 }
+
+//Render the boid
+func (boid *Boid) Render() {
+
+}
+
+//Updates a boids state
+func (boid *Boid) Update() {
+	// Update velocity
+	boid.Velocity.Add(boid.Acceleration)
+	// Limit speed
+	boid.Velocity.Limit(boid.Maxspeed)
+	boid.Location.Add(boid.Velocity)
+	// Reset accelertion to 0 each cycle
+	boid.Acceleration.Mult(0)
+}
+
+//Applies a force to boid
+func (boid *Boid) ApplyForce(force PVector) {
+	boid.Acceleration.Add(force)
+}

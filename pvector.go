@@ -43,6 +43,46 @@ func NewRandom3dPVector() PVector {
 	return result
 }
 
+//Calculates the length of the vector
+func (pvec *PVector) Mag() float64 {
+	return math.Sqrt(pvec.X*pvec.X + pvec.Y*pvec.Y + pvec.Z*pvec.Z)
+}
+
+//Calculates the squared magnitude of the vector
+// (x*x + y*y + z*z)
+func (pvec *PVector) MagSq() float64 {
+	return pvec.X*pvec.X + pvec.Y*pvec.Y + pvec.Z*pvec.Z
+}
+
+//Limit the magnitude of vector to specified max
+func (pvec *PVector) Limit(max float64) {
+	if pvec.MagSq() > max*max {
+		pvec.Normalize()
+		pvec.Mult(max)
+	}
+}
+
+//Adds 2 vectors
+func (pvec *PVector) Add(pVector PVector) {
+	pvec.X += pVector.X
+	pvec.Y += pVector.Y
+	pvec.Z += pVector.Z
+}
+
+//Divides the vector by the specified scalar
+func (pvec *PVector) Div(n float64) {
+	pvec.X /= n
+	pvec.Y /= n
+	pvec.Z /= n
+}
+
+//Multiplys vector by specified scalar
+func (pvec *PVector) Mult(n float64) {
+	pvec.X *= n
+	pvec.Y *= n
+	pvec.Z *= n
+}
+
 //Decrements vector by 1
 func (pvec *PVector) Sub() {
 	pvec.X--
@@ -55,4 +95,12 @@ func (pvec *PVector) Inc() {
 	pvec.X++
 	pvec.Y++
 	pvec.Z++
+}
+
+//Normalize vector to length 1
+func (pvec *PVector) Normalize() {
+	m := pvec.Mag()
+	if m != 0 && m != 1 {
+		pvec.Div(m)
+	}
 }
