@@ -54,6 +54,14 @@ func (pvec *PVector) MagSq() float64 {
 	return pvec.X*pvec.X + pvec.Y*pvec.Y + pvec.Z*pvec.Z
 }
 
+//Returns distance to specified neighbour
+func (pvec *PVector) Dist(neighbour PVector) float64 {
+	dx := pvec.X - neighbour.X
+	dy := pvec.Y - neighbour.Y
+	dz := pvec.Z - neighbour.Z
+	return math.Sqrt(dx*dx + dy*dy + dz*dz)
+}
+
 //Limit the magnitude of vector to specified max
 func (pvec *PVector) Limit(max float64) {
 	if pvec.MagSq() > max*max {
@@ -88,6 +96,16 @@ func (pvec *PVector) Sub() {
 	pvec.X--
 	pvec.Y--
 	pvec.Z--
+}
+
+//Subtracts specified vector
+//returns difference
+func (pvec *PVector) Diff(n PVector) PVector {
+	return PVector{
+		X: pvec.X - n.X,
+		Y: pvec.Y - n.Y,
+		Z: pvec.Z - n.Z,
+	}
 }
 
 //Increments vector by 1
