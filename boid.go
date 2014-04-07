@@ -4,6 +4,11 @@ import (
 //"math/rand"
 )
 
+type BoidMap struct {
+	Height int
+	Width  int
+}
+
 //Holds state of a boid
 type Boid struct {
 	Location     PVector
@@ -25,10 +30,10 @@ func NewFlock() Flock {
 }
 
 //Run 1 step on flock
-func (flock *Flock) Run() {
+func (flock *Flock) Run(bMap BoidMap) {
 	for _, boid := range flock.Boids {
 		//TODO: list should exclude current boid
-		boid.Run(flock.Boids)
+		boid.Run(flock.Boids, bMap)
 	}
 }
 
@@ -44,9 +49,16 @@ func NewBoid(x float64, y float64) Boid {
 	return result
 }
 
-//Run 1 step in simulation
-func (boid *Boid) Run(neighbours []Boid) {
+func RunSimulation() {
 
+}
+
+//Run 1 step in simulation
+func (boid *Boid) Run(neighbours []Boid, bMap BoidMap) {
+	boid.Flock(neighbours)
+	boid.Update()
+	boid.Wrap(bMap)
+	boid.Render()
 }
 
 //Render the boid
@@ -54,6 +66,23 @@ func (boid *Boid) Render() {
 
 }
 
+//Wrap location when hitting edge of map
+func (boid *Boid) Wrap(bMap BoidMap) {
+	if boid.Location.X < -boid.R {
+		boid.Location.X = float64(bMap.Width) + boid.R
+	}
+	if boid.Location.Y < -boid.R {
+		boid.Location.Y = float64(bMap.Height) + boid.R
+	}
+	if boid.Location.X > float64(bMap.Width)+boid.R {
+		boid.Location.X = -boid.R
+	}
+	if boid.Location.Y > float64(bMap.Height)+boid.R {
+		boid.Location.Y = -boid.R
+	}
+}
+
+//
 func (boid *Boid) ApplyForce(force PVector) {
 	boid.Acceleration.Add(force)
 }
