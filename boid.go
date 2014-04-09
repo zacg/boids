@@ -1,7 +1,9 @@
 package boids
 
 import (
-//"math/rand"
+	//"math/rand"
+	"fmt"
+	"math"
 )
 
 type BoidMap struct {
@@ -35,6 +37,23 @@ func (flock *Flock) Run(bMap BoidMap) {
 		//TODO: list should exclude current boid
 		boid.Run(flock.Boids, bMap)
 	}
+
+	for h := 0; h < bMap.Height; h++ {
+		for w := 0; w < bMap.Width; w++ {
+			hit := false
+			for _, boid := range flock.Boids {
+				if int(boid.Location.X) == w && int(boid.Location.Y) == h {
+					hit = true
+				}
+			}
+			if hit {
+				fmt.Print("*")
+			} else {
+				fmt.Print(" ")
+			}
+		}
+		fmt.Println("")
+	}
 }
 
 //Creates a new Boid
@@ -58,13 +77,17 @@ func (boid *Boid) Run(neighbours []Boid, bMap BoidMap) {
 	boid.Flock(neighbours)
 	boid.Update()
 	boid.Wrap(bMap)
-	boid.Render()
+	//boid.Render()
 }
 
 //Render the boid
-func (boid *Boid) Render() {
+// func (boid *Boid) Render(bMap BoidMap) {
+// 	for w := 0; w < bMap.Width; w++ {
+// 		for h := 0; h < bMap.Height; h++ {
 
-}
+// 		}
+// 	}
+// }
 
 //Wrap location when hitting edge of map
 func (boid *Boid) Wrap(bMap BoidMap) {
