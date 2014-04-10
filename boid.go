@@ -1,9 +1,9 @@
 package boids
 
 import (
-	//"math/rand"
 	"fmt"
-	"math"
+	"math/rand"
+	//"math"
 )
 
 type BoidMap struct {
@@ -28,11 +28,17 @@ type Flock struct {
 
 //Creates a new Flock
 func NewFlock() Flock {
-	return Flock{}
+	flock := Flock{}
+	flock.Boids = make([]Boid, 10)
+	for n := 0; n < 10; n++ {
+		flock.Boids[n] = NewBoid(float64(rand.Intn(600)), float64(rand.Intn(400)))
+	}
+	return flock
 }
 
 //Run 1 step on flock
 func (flock *Flock) Run(bMap BoidMap) {
+	fmt.Println("starting...")
 	for _, boid := range flock.Boids {
 		//TODO: list should exclude current boid
 		boid.Run(flock.Boids, bMap)
@@ -52,8 +58,9 @@ func (flock *Flock) Run(bMap BoidMap) {
 				fmt.Print(" ")
 			}
 		}
-		fmt.Println("")
+		fmt.Println("|")
 	}
+	fmt.Println("done")
 }
 
 //Creates a new Boid
