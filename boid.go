@@ -31,7 +31,7 @@ func NewFlock() Flock {
 	flock := Flock{}
 	flock.Boids = make([]Boid, 10)
 	for n := 0; n < 10; n++ {
-		flock.Boids[n] = NewBoid(float64(rand.Intn(600)), float64(rand.Intn(400)))
+		flock.Boids[n] = NewBoid(float64(rand.Intn(25)), float64(rand.Intn(25)))
 	}
 	return flock
 }
