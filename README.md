@@ -8,3 +8,4 @@ Boids simulation written in Golang
 
 ###Usage
 
+	import "github.com/zacg/boids"
