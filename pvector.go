@@ -1,6 +1,7 @@
 package boids
 
 import (
+	//"fmt"
 	"math"
 	"math/rand"
 )

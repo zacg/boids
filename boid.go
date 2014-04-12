@@ -1,10 +1,16 @@
 package boids
 
 import (
-	"fmt"
-	"math/rand"
+	"bytes"
+	//"fmt"
+	//"math/rand"
 	//"math"
 )
+
+type Game struct {
+	Flock Flock
+	Map   BoidMap
+}
 
 type BoidMap struct {
 	Height int
@@ -29,38 +35,41 @@ type Flock struct {
 //Creates a new Flock
 func NewFlock() Flock {
 	flock := Flock{}
-	flock.Boids = make([]Boid, 10)
-	for n := 0; n < 10; n++ {
-		flock.Boids[n] = NewBoid(float64(rand.Intn(25)), float64(rand.Intn(25)))
+	flock.Boids = make([]Boid, 25)
+
+	for n := 0; n < 25; n++ {
+		flock.Boids[n] = NewBoid(float64(25), float64(10))
 	}
 	return flock
 }
 
 //Run 1 step on flock
-func (flock *Flock) Run(bMap BoidMap) {
-	fmt.Println("starting...")
-	for _, boid := range flock.Boids {
+func (flock *Flock) Run(bMap BoidMap) string {
+	for n, _ := range flock.Boids {
 		//TODO: list should exclude current boid
-		boid.Run(flock.Boids, bMap)
+		flock.Boids[n].Run(flock.Boids, bMap)
 	}
 
+	var buf bytes.Buffer
 	for h := 0; h < bMap.Height; h++ {
 		for w := 0; w < bMap.Width; w++ {
 			hit := false
 			for _, boid := range flock.Boids {
 				if int(boid.Location.X) == w && int(boid.Location.Y) == h {
 					hit = true
+					break
 				}
 			}
 			if hit {
-				fmt.Print("*")
+				buf.WriteByte('*')
 			} else {
-				fmt.Print(" ")
+				buf.WriteByte(' ')
 			}
 		}
-		fmt.Println("|")
+		buf.WriteByte('|')
+		buf.WriteByte('\n')
 	}
-	fmt.Println("done")
+	return buf.String()
 }
 
 //Creates a new Boid
@@ -124,9 +133,10 @@ func (boid *Boid) Flock(neighbours []Boid) {
 	aln := boid.Align(neighbours)
 	coh := boid.Cohesion(neighbours)
 	// Weight forces
-	sep.Mult(1.5)
+	sep.Mult(1.3)
 	aln.Mult(1.0)
-	coh.Mult(1.0)
+	coh.Mult(1.2)
+
 	//Add forces to boids acceleration
 	boid.ApplyForce(sep)
 	boid.ApplyForce(aln)
@@ -146,7 +156,7 @@ func (boid *Boid) Seek(target PVector) PVector {
 
 //Calculates steering vector towards center of all neighbour boids
 func (boid *Boid) Cohesion(neighbours []Boid) PVector {
-	neighbourDist := 50.0
+	neighbourDist := 5.0
 	sum := NewPVector2D(0, 0)
 	count := 0
 
