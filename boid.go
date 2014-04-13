@@ -7,11 +7,13 @@ import (
 	//"math"
 )
 
+//Game state
 type Game struct {
 	Flock Flock
 	Map   BoidMap
 }
 
+//Game map
 type BoidMap struct {
 	Height int
 	Width  int
@@ -32,6 +34,21 @@ type Flock struct {
 	Boids []Boid
 }
 
+func NewGame() Game {
+	bMap := BoidMap{Height: 25, Width: 75}
+	flock := NewFlock()
+	game := Game{}
+	game.Flock = flock
+	game.Map = bMap
+
+	return game
+}
+
+// func NewCustomGame() {
+// 	game := NewGame()
+// 	return game
+// }
+
 //Creates a new Flock
 func NewFlock() Flock {
 	flock := Flock{}
@@ -43,18 +60,18 @@ func NewFlock() Flock {
 	return flock
 }
 
-//Run 1 step on flock
-func (flock *Flock) Run(bMap BoidMap) string {
-	for n, _ := range flock.Boids {
-		//TODO: list should exclude current boid
-		flock.Boids[n].Run(flock.Boids, bMap)
+//Run 1 step on game
+//Returns string representation of the game board
+func (game *Game) Run() string {
+	for n, _ := range game.Flock.Boids {
+		game.Flock.Boids[n].Run(game.Flock.Boids, game.Map)
 	}
 
 	var buf bytes.Buffer
-	for h := 0; h < bMap.Height; h++ {
-		for w := 0; w < bMap.Width; w++ {
+	for h := 0; h < game.Map.Height; h++ {
+		for w := 0; w < game.Map.Width; w++ {
 			hit := false
-			for _, boid := range flock.Boids {
+			for _, boid := range game.Flock.Boids {
 				if int(boid.Location.X) == w && int(boid.Location.Y) == h {
 					hit = true
 					break
@@ -84,26 +101,12 @@ func NewBoid(x float64, y float64) Boid {
 	return result
 }
 
-func RunSimulation() {
-
-}
-
 //Run 1 step in simulation
 func (boid *Boid) Run(neighbours []Boid, bMap BoidMap) {
 	boid.Flock(neighbours)
 	boid.Update()
 	boid.Wrap(bMap)
-	//boid.Render()
 }
-
-//Render the boid
-// func (boid *Boid) Render(bMap BoidMap) {
-// 	for w := 0; w < bMap.Width; w++ {
-// 		for h := 0; h < bMap.Height; h++ {
-
-// 		}
-// 	}
-// }
 
 //Wrap location when hitting edge of map
 func (boid *Boid) Wrap(bMap BoidMap) {
@@ -133,9 +136,9 @@ func (boid *Boid) Flock(neighbours []Boid) {
 	aln := boid.Align(neighbours)
 	coh := boid.Cohesion(neighbours)
 	// Weight forces
-	sep.Mult(1.3)
+	sep.Mult(1.0)
 	aln.Mult(1.0)
-	coh.Mult(1.2)
+	coh.Mult(1.0)
 
 	//Add forces to boids acceleration
 	boid.ApplyForce(sep)
