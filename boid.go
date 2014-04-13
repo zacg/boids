@@ -3,7 +3,7 @@ package boids
 import (
 	"bytes"
 	//"fmt"
-	//"math/rand"
+	"math/rand"
 	//"math"
 )
 
@@ -55,7 +55,8 @@ func NewFlock() Flock {
 	flock.Boids = make([]Boid, 25)
 
 	for n := 0; n < 25; n++ {
-		flock.Boids[n] = NewBoid(float64(25), float64(10))
+		//flock.Boids[n] = NewBoid(float64(25), float64(10))
+		flock.Boids[n] = NewBoid(float64(rand.Intn(75)), float64(rand.Intn(25)))
 	}
 	return flock
 }
@@ -78,11 +79,13 @@ func (game *Game) Run() string {
 				}
 			}
 			if hit {
+				buf.WriteString("\x1b[31;1m")
 				buf.WriteByte('*')
 			} else {
 				buf.WriteByte(' ')
 			}
 		}
+		buf.WriteString("\x1b[0m")
 		buf.WriteByte('|')
 		buf.WriteByte('\n')
 	}
